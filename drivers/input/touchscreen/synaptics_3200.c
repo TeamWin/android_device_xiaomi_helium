@@ -46,7 +46,7 @@ static struct clk *cpu_clk;
 /* #define SYN_CABLE_CONTROL */
 /*#define SYN_CALIBRATION_CONTROL*/
 /* #define SYN_FILTER_CONTROL */
-/* #define SYN_FLASH_PROGRAMMING_LOG */
+#define SYN_FLASH_PROGRAMMING_LOG
 /* #define SYN_DISABLE_CONFIG_UPDATE */
 #define FAKE_EVENT
 
@@ -160,10 +160,10 @@ extern int get_tamper_sf(void);
 // beyond this threshold the panel will not register to apps
 int s2w_register_threshold = 9;
 // power will toggle at this distance from start point
-int s2w_min_distance = 325;
+int s2w_min_distance = 400;
 // use either direction for on/off
-int s2w_allow_stroke = 1;
-int s2w_switch = 0;
+int s2w_allow_stroke = 0;
+int s2w_switch = 1;
 bool scr_suspended = false;
 bool exec_count = true;
 bool barrier = false;
