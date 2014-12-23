@@ -46,7 +46,7 @@ static struct clk *cpu_clk;
 /* #define SYN_CABLE_CONTROL */
 /*#define SYN_CALIBRATION_CONTROL*/
 /* #define SYN_FILTER_CONTROL */
-#define SYN_FLASH_PROGRAMMING_LOG
+/* #define SYN_FLASH_PROGRAMMING_LOG */
 /* #define SYN_DISABLE_CONFIG_UPDATE */
 #define FAKE_EVENT
 
