@@ -45,7 +45,7 @@ static const struct file_operations atags_fops = {
           .llseek = default_llseek,
 };
 
-#define BOOT_PARAMS_SIZE 1536
+#define BOOT_PARAMS_SIZE 8000
 static char __initdata atags_copy[BOOT_PARAMS_SIZE];
 
 void __init save_atags(const struct tag *tags)
