@@ -30,12 +30,12 @@
 #endif
 
 #if defined(CONFIG_MACH_ENDEAVORU)
-#define END_MEM UL(0xBF200000)
+#define END_MEM UL(0xBEA00000)
 #endif
 
 #if defined(CONFIG_KEXEC_HARDBOOT)
 #if defined(CONFIG_MACH_ENDEAVORU)
-#define KEXEC_HB_PAGE_ADDR UL(0xBF200000)
+#define KEXEC_HB_PAGE_ADDR UL(0xBEA00000)
 #else
 #error "Adress for kexec hardboot page not defined"
 #endif
