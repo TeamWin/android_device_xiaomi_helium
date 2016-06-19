@@ -21,8 +21,6 @@
 #include <linux/workqueue.h>
 #include <linux/cpumask.h>
 #include <asm/div64.h>
-#include <asm/cputime.h>
-#include <linux/module.h>
 
 #define CPUFREQ_NAME_LEN 16
 
@@ -359,7 +357,7 @@ extern struct cpufreq_governor cpufreq_gov_performance;
 #define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_performance)
 #elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_POWERSAVE)
 extern struct cpufreq_governor cpufreq_gov_powersave;
-#define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_powersav
+#define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_powersave)
 #elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE)
 extern struct cpufreq_governor cpufreq_gov_userspace;
 #define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_userspace)
@@ -418,82 +416,6 @@ void cpufreq_frequency_table_get_attr(struct cpufreq_frequency_table *table,
 				      unsigned int cpu);
 
 void cpufreq_frequency_table_put_attr(unsigned int cpu);
-
-/*********************************************************************
- *                         CPUFREQ STATS                             *
- *********************************************************************/
-
-void acct_update_power(struct task_struct *p, cputime_t cputime);
-
-//                                                                                     
-/* cpufreq pm qos */
-int cpufreq_set_min_freq(void *data, s32 val);
-int cpufreq_set_max_freq(void *data, s32 val);
-//                                                                                     
-
-/*********************************************************************
- *                     UNIFIED DEBUG HELPERS                         *
- *********************************************************************/
-
-#define CPUFREQ_DEBUG_CORE	1
-#define CPUFREQ_DEBUG_DRIVER	2
-#define CPUFREQ_DEBUG_GOVERNOR	4
-
-#ifdef CONFIG_CPU_FREQ_DEBUG
-
-extern void cpufreq_debug_printk(unsigned int type, const char *prefix, 
-				 const char *fmt, ...);
-
-#else
-
-#define cpufreq_debug_printk(msg...) do { } while(0)
-
-#endif /* CONFIG_CPU_FREQ_DEBUG */
-
-//                                                               
-#ifdef CONFIG_ARCH_TEGRA_3x_SOC
-extern unsigned long cpufreq_limited_max_cores_cur;
-extern unsigned long cpufreq_limited_max_cores_expected;
-#endif
-//                                                               
-
-/*********************************************************************
- *                         CPUFREQ STATS                             *
- *********************************************************************/
-
-void acct_update_power(struct task_struct *p, cputime_t cputime);
-
-//                                                                                     
-/* cpufreq pm qos */
-int cpufreq_set_min_freq(void *data, s32 val);
-int cpufreq_set_max_freq(void *data, s32 val);
-//                                                                                     
-
-/*********************************************************************
- *                     UNIFIED DEBUG HELPERS                         *
- *********************************************************************/
-
-#define CPUFREQ_DEBUG_CORE	1
-#define CPUFREQ_DEBUG_DRIVER	2
-#define CPUFREQ_DEBUG_GOVERNOR	4
-
-#ifdef CONFIG_CPU_FREQ_DEBUG
-
-extern void cpufreq_debug_printk(unsigned int type, const char *prefix, 
-				 const char *fmt, ...);
-
-#else
-
-#define cpufreq_debug_printk(msg...) do { } while(0)
-
-#endif /* CONFIG_CPU_FREQ_DEBUG */
-
-//                                                               
-#ifdef CONFIG_ARCH_TEGRA_3x_SOC
-extern unsigned long cpufreq_limited_max_cores_cur;
-extern unsigned long cpufreq_limited_max_cores_expected;
-#endif
-//                                                               
 
 
 #endif /* _LINUX_CPUFREQ_H */
