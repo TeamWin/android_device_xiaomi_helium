@@ -66,4 +66,3 @@ obj-$(CONFIG_CABLE_DETECT_ACCESSORY)+= cable_detect.o
 obj-$(CONFIG_HTC_PROJECT)		+= htc/
 obj-$(CONFIG_THERM_EST)		+= therm_est.o
 obj-$(CONFIG_TEGRA_THROUGHPUT)	+= tegra-throughput.o
-obj-$(CONFIG_UID_CPUTIME) += uid_cputime.o
