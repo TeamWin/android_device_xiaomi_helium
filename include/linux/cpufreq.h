@@ -470,4 +470,3 @@ extern unsigned long cpufreq_limited_max_cores_expected;
 
 
 #endif /* _LINUX_CPUFREQ_H */
-
