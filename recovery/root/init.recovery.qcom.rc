@@ -1,0 +1,99 @@
+# Copyright (c) 2009-2012, 2014-2015, The Linux Foundation. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#     * Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in the
+#       documentation and/or other materials provided with the distribution.
+#     * Neither the name of The Linux Foundation nor
+#       the names of its contributors may be used to endorse or promote
+#       products derived from this software without specific prior written
+#       permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NON-INFRINGEMENT ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+
+on property:ro.crypto.state=encrypted
+    stop qseecomd
+    start qseecomd
+
+
+# QSEE crypt support service
+# Separate copy needed to use /sbin/linker64 instead of /system/bin/linker64
+#
+# MODIFIED AT 2017/01/09:  qseecomd service may should start at first
+service qseecomd /sbin/qseecomd
+#    oneshot
+#    disabled
+    user root
+    group root
+    seclabel u:r:recovery:s0
+
+# Try to remove the unproper bootdevice folder before relinking
+on boot
+    exec u:r:recovery:s0 -- /sbin/busybox rm -r /dev/block/bootdevice
+    symlink /dev/block/platform/7824900.sdhci /dev/block/bootdevice
+
+# needed to make qseecomd work in recovery
+on fs
+    # Automatically-created bootdevice folder is not refer to the actual device.
+    # Must relink to make qseecomd run properly.
+    symlink /dev/block/platform/7824900.sdhci /dev/block/bootdevice
+
+    chmod 0660 /dev/qseecom
+    chown system drmrpc /dev/qseecom
+    chmod 0664 /dev/ion
+    chown system system /dev/ion
+
+
+# Launch vold after filesystem mounted
+on post-fs-data
+# MODIFIED AT 2017/01/09:  vdc cryptfs enablecrypto stucked here due to time out when triggering post_fs_data
+#      So I don't start vold here, as another vold daemon would be create here. That would waste amount of time.
+#    start vold
+
+    # Mount those partitions which may have decrypt applications
+    wait /dev/block/bootdevice/by-name/persist
+    mount ext4 /dev/block/bootdevice/by-name/persist /persist nosuid nodev barrier=1
+    restorecon_recursive /persist
+    mkdir /persist/data 0700 system system
+
+    wait /dev/block/bootdevice/by-name/dsp
+    mount ext4 /dev/block/bootdevice/by-name/dsp /dsp ro nosuid nodev barrier=1
+
+    wait /dev/block/bootdevice/by-name/modem
+    mount vfat /dev/block/bootdevice/by-name/modem /firmware ro shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337,context=u:object_r:firmware_file:s0
+
+    symlink /firmware/image /vendor/firmware
+
+
+# Add vold support for modifying encryption
+service vold /sbin/vold --blkid_context=u:r:blkid:s0 --blkid_untrusted_context=u:r:blkid_untrusted:s0 --fsck_context=u:r:fsck:s0 --fsck_untrusted_context=u:r:fsck_untrusted:s0
+    class core
+    socket vold stream 0660 root mount
+    socket cryptd stream 0660 root mount
+    ioprio be 2
+    seclabel u:r:recovery:s0
+
+# Add debuggerd support to pair with vold
+#service debuggerd /sbin/debuggerd
+#    class main
+#    writepid /dev/cpuset/system-background/tasks
+#	seclabel u:r:recovery:s0
+
+service debuggerd64 /sbin/debuggerd64
+    class main
+    writepid /dev/cpuset/system-background/tasks
+	seclabel u:r:recovery:s0

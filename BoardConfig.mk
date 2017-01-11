@@ -58,6 +58,13 @@ BOARD_MKBOOTIMG_ARGS :=  --ramdisk_offset 0x01000000 --tags_offset 0x00000100
 BOARD_CUSTOM_BOOTIMG_MK := device/xiaomi/helium/mkbootimg.mk
 TARGET_PREBUILT_KERNEL := device/xiaomi/helium/kernel
 
+# Encryption
+# Switch on encryption support here.
+TARGET_HW_DISK_ENCRYPTION := true
+
+# Keymaster Setting
+TARGET_KEYMASTER_WAIT_FOR_QSEE := true
+
 # Partitions
 
 BOARD_BOOTIMAGE_PARTITION_SIZE := 0x4000000
@@ -83,3 +90,11 @@ TW_DEFAULT_EXTERNAL_STORAGE := true
 TW_BRIGHTNESS_PATH := /sys/class/leds/lcd-backlight/brightness
 TW_INCLUDE_CRYPTO := true
 TW_THEME= portrait_hdpi
+
+# Vendor Init
+# Maybe this is an essential for enabling decryption.
+TARGET_INIT_VENDOR_LIB := libinit_msm
+
+# Enable logcat support! Yahoo!
+TWRP_INCLUDE_LOGCAT := true
+TARGET_USES_LOGD := true
