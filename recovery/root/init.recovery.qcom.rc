@@ -26,17 +26,17 @@
 #
 
 on property:ro.crypto.state=encrypted
-    stop sbinqseecomd
-    start sbinqseecomd
+    stop qseecomd
+    start qseecomd
 
-on property:ro.crypto.fs_crypto_blkdev=/dev/block/dm-0
-    stop sbinqseecomd
 
 # QSEE crypt support service
 # Separate copy needed to use /sbin/linker64 instead of /system/bin/linker64
-service sbinqseecomd /sbin/qseecomd
-    oneshot
-    disabled
+#
+# MODIFIED AT 2017/01/09:  qseecomd service may should start at first
+service qseecomd /sbin/qseecomd
+#    oneshot
+#    disabled
     user root
     group root
     seclabel u:r:recovery:s0
@@ -57,6 +57,13 @@ on fs
     chmod 0664 /dev/ion
     chown system system /dev/ion
 
+
+# Launch vold after filesystem mounted
+on post-fs-data
+# MODIFIED AT 2017/01/09:  vdc cryptfs enablecrypto stucked here due to time out when triggering post_fs_data
+#      So I don't start vold here, as another vold daemon would be create here. That would waste amount of time.
+#    start vold
+
     # Mount those partitions which may have decrypt applications
     wait /dev/block/bootdevice/by-name/persist
     mount ext4 /dev/block/bootdevice/by-name/persist /persist nosuid nodev barrier=1
@@ -71,3 +78,22 @@ on fs
 
     symlink /firmware/image /vendor/firmware
 
+
+# Add vold support for modifying encryption
+service vold /sbin/vold --blkid_context=u:r:blkid:s0 --blkid_untrusted_context=u:r:blkid_untrusted:s0 --fsck_context=u:r:fsck:s0 --fsck_untrusted_context=u:r:fsck_untrusted:s0
+    class core
+    socket vold stream 0660 root mount
+    socket cryptd stream 0660 root mount
+    ioprio be 2
+    seclabel u:r:recovery:s0
+
+# Add debuggerd support to pair with vold
+#service debuggerd /sbin/debuggerd
+#    class main
+#    writepid /dev/cpuset/system-background/tasks
+#	seclabel u:r:recovery:s0
+
+service debuggerd64 /sbin/debuggerd64
+    class main
+    writepid /dev/cpuset/system-background/tasks
+	seclabel u:r:recovery:s0
