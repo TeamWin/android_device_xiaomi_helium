@@ -19,3 +19,9 @@ Front Camera | 5.0 MP
 Release Date | May 2016
 
 ![Xiaomi Mi Max](http://cdn2.gsmarena.com/vv/pics/xiaomi/xiaomi-mi-max--1.jpg "Xiaomi Mi Max")
+
+Special features of this TWRP config
+=====================================
+- Full cryptfs support. You can directly mount encrypted data partition in TWRP.
+
+
