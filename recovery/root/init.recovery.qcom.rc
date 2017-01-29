@@ -26,12 +26,54 @@
 #
 
 on property:ro.crypto.state=encrypted
-    start sbinqseecomd
+    stop qseecomd
+    start qseecomd
 
+
+# QSEE crypt support service
 # Separate copy needed to use /sbin/linker64 instead of /system/bin/linker64
-service sbinqseecomd /sbin/qseecomd
-    oneshot
-    disabled
+#
+# MODIFIED AT 2017/01/09:  qseecomd service may should start at first
+service qseecomd /sbin/qseecomd
     user root
     group root
     seclabel u:r:recovery:s0
+
+# Try to remove the unproper bootdevice folder before relinking
+on boot
+    exec u:r:recovery:s0 -- /sbin/busybox rm -r /dev/block/bootdevice
+    symlink /dev/block/platform/7824900.sdhci /dev/block/bootdevice
+
+# needed to make qseecomd work in recovery
+on fs
+    # Automatically-created bootdevice folder is not refer to the actual device.
+    # Must relink to make qseecomd run properly.
+    symlink /dev/block/platform/7824900.sdhci /dev/block/bootdevice
+
+    chmod 0660 /dev/qseecom
+    chown system drmrpc /dev/qseecom
+    chmod 0664 /dev/ion
+    chown system system /dev/ion
+
+
+on post-fs-data
+
+    # Mount those partitions which may have decrypt applications
+    wait /dev/block/bootdevice/by-name/persist
+    mount ext4 /dev/block/bootdevice/by-name/persist /persist nosuid nodev barrier=1
+    restorecon_recursive /persist
+    mkdir /persist/data 0700 system system
+
+    wait /dev/block/bootdevice/by-name/dsp
+    mount ext4 /dev/block/bootdevice/by-name/dsp /dsp ro nosuid nodev barrier=1
+
+    wait /dev/block/bootdevice/by-name/modem
+    mount vfat /dev/block/bootdevice/by-name/modem /firmware ro shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337,context=u:object_r:firmware_file:s0
+
+    symlink /firmware/image /vendor/firmware
+
+service debuggerd64 /sbin/debuggerd64
+    class main
+    writepid /dev/cpuset/system-background/tasks
+	seclabel u:r:recovery:s0
+        
