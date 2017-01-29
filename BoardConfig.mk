@@ -146,3 +146,19 @@ TW_THEME := portrait_hdpi
 # Logcat
 TWRP_INCLUDE_LOGCAT := true
 TARGET_USES_LOGD := true
+
+# Encryption
+# Switch on encryption support here.
+TARGET_HW_DISK_ENCRYPTION := true
+
+# Keymaster Setting
+TARGET_KEYMASTER_WAIT_FOR_QSEE := true
+
+# Vendor Init
+# TODO: Should introduce device_qcom_common to Omni 6.0 Code before enabling vendor init.
+#TARGET_INIT_VENDOR_LIB := libinit_msm
+
+# Enable logcat support! Yahoo!
+TWRP_INCLUDE_LOGCAT := true
+TARGET_USES_LOGD := true
+
