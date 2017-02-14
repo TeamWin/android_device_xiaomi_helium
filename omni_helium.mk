@@ -14,21 +14,9 @@
 # limitations under the License.
 #
 
-# Release name
-PRODUCT_RELEASE_NAME := helium
-
-$(call inherit-product, build/target/product/embedded.mk)
-
 # Inherit from our custom product configuration
 $(call inherit-product, vendor/omni/config/common.mk)
 
-# Time Zone data for recovery
-PRODUCT_COPY_FILES += \
-    bionic/libc/zoneinfo/tzdata:recovery/root/system/usr/share/zoneinfo/tzdata
+$(call inherit-product, device/xiaomi/helium/full_helium.mk)
 
-## Device identifier. This must come after all inclusions
-PRODUCT_DEVICE := helium
 PRODUCT_NAME := omni_helium
-PRODUCT_BRAND := Xiaomi
-PRODUCT_MODEL := Mi Max Prime
-PRODUCT_MANUFACTURER := Xiaomi
