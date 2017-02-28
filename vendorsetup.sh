@@ -1,2 +1,2 @@
-add_lunch_combo omni_helium-userdebug
 add_lunch_combo omni_helium-eng
+add_lunch_combo omni_helium-userdebug

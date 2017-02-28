@@ -34,7 +34,7 @@
 /dev/kgsl-2d0             0666   root       root
 /dev/kgsl-2d1             0666   root       root
 /dev/ion                  0664   system     system
-/dev/rtc0                 0660   system     system
+/dev/rtc0                 0640   system     system
 /dev/smd0                 0660   system     system
 /dev/smd4                 0660   system     system
 /dev/smd_cxm_qmi          0640   radio      radio
@@ -117,6 +117,7 @@
 /dev/adsprpc-smd          0664   system     system
 /dev/system_health_monitor 0640  radio      system
 /dev/fpc1020              0666   system     system
+
 # wlan
 /dev/wcnss_wlan           0660   system     system
 /dev/wcnss_ctrl           0660   system     system
@@ -252,6 +253,9 @@
 
 # Add device block for FRP
 /dev/block/platform/soc.0/7824900.sdhci/by-name/config    0660   system     system
+
+# For lirc
+/dev/lirc0          0660   system     system
 
 # FPC
 /sys/devices/soc.0/fpc_fpc1020.*        irq             0660        system      system
