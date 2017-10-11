@@ -5,8 +5,8 @@ Device configuration for Xiaomi Mi Max (helium)
 
 Basic   | Spec Sheet
 -------:|:-------------------------
-CHIPSET | Qualcomm MSM8956 Snapdragon 650
-CPU     | Quad-core 1.4 GHz Cortex-A53 & Dual-core 1.8 GHz Cortex-A72
+CHIPSET | Qualcomm MSM8956 Snapdragon 650 / Qualcomm MSM8976 Snapdragon 652
+CPU     | Quad-core 1.4 GHz Cortex-A53 & Dual-core 1.8 GHz Cortex-A72 <br/> Quad-core 1.4 GHz Cortex-A53 & Quad-core 1.8 GHz Cortex-A72
 GPU     | Adreno 510
 Memory  | 3/4 GB
 Shipped Android Version | Android 6.0 with MIUI
